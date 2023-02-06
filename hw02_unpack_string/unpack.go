@@ -35,7 +35,7 @@ func Unpack(s string) (string, error) {
 func isEscaped(i int, chs []rune) bool {
 	var count int
 	if i > 0 {
-		for ; i >= 0 && string(chs[i-1]) == `\`; i-- {
+		for ; i >= 1 && string(chs[i-1]) == `\`; i-- {
 			count++
 		}
 		if (count % 2) == 1 {
@@ -53,7 +53,7 @@ func isNumPositionIncorrect(i int, chs []rune) bool {
 }
 
 func isSlashPositionIncorrect(i int, chs []rune) bool {
-	if i == 0 || (!unicode.IsDigit(chs[i+1]) && string(chs[i+1]) != `\`) {
+	if (i == (len(chs)-1) && !isEscaped(i, chs)) || (!unicode.IsDigit(chs[i+1]) && string(chs[i+1]) != `\`) {
 		return true
 	}
 	return false

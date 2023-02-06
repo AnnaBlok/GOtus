@@ -22,6 +22,7 @@ func TestUnpack(t *testing.T) {
 		{input: `qwe\45`, expected: `qwe44444`},
 		{input: `qwe\\5`, expected: `qwe\\\\\`},
 		{input: `qwe\\\3`, expected: `qwe\3`},
+		{input: `\3qwe\\3`, expected: `3qwe\\\`},
 	}
 
 	for _, tc := range tests {
@@ -46,7 +47,7 @@ func TestUnpackInvalidString(t *testing.T) {
 }
 
 func TestUnpackInvalidEscaping(t *testing.T) {
-	invalidStrings := []string{`qwe\ne`, `\\\`, `qq\\\q`}
+	invalidStrings := []string{`qwe\ne`, `\\\`, `qq\\\q`, `aab\`}
 	for _, tc := range invalidStrings {
 		tc := tc
 		t.Run(tc, func(t *testing.T) {
