@@ -17,7 +17,7 @@ func Top10(text string) []string {
 	for _, word := range words {
 		word = strings.ReplaceAll(strings.ToLower(word), "-", "")
 		if len(word) > 0 {
-			wordsCount[word] += 1
+			wordsCount[word]++
 		}
 	}
 	keys := make([]string, 0, len(wordsCount))
@@ -30,7 +30,6 @@ func Top10(text string) []string {
 	})
 	if len(keys) > 9 {
 		return keys[:10]
-	} else {
-		return keys
 	}
+	return keys
 }
