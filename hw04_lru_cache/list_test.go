@@ -48,4 +48,32 @@ func TestList(t *testing.T) {
 		}
 		require.Equal(t, []int{70, 80, 60, 40, 10, 30, 50}, elems)
 	})
+
+	t.Run("only front/back push", func(t *testing.T) {
+		l := NewList()
+		l.PushFront(10)
+		l.PushFront(20)
+		l.PushFront(30)
+
+		require.Equal(t, 30, l.Front().Value)
+		require.Equal(t, 10, l.Back().Value)
+
+		l = NewList()
+		l.PushBack(10)
+		l.PushBack(20)
+		l.PushBack(30)
+
+		require.Equal(t, 10, l.Front().Value)
+		require.Equal(t, 30, l.Back().Value)
+	})
+
+	t.Run("remove the last item", func(t *testing.T) {
+		l := NewList()
+		item := l.PushFront(10)
+		l.Remove(item)
+
+		require.Equal(t, 0, l.Len())
+		require.Nil(t, l.Front())
+		require.Nil(t, l.Back())
+	})
 }
