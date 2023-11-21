@@ -13,7 +13,7 @@ type Cache interface {
 type lruCache struct {
 	capacity int
 	queue    List
-	items    map[Key]cacheItem
+	items    map[Key]*cacheItem
 	sync.Mutex
 }
 
@@ -26,7 +26,7 @@ func NewCache(capacity int) Cache {
 	return &lruCache{
 		capacity: capacity,
 		queue:    NewList(),
-		items:    make(map[Key]cacheItem, capacity),
+		items:    make(map[Key]*cacheItem, capacity),
 	}
 }
 
@@ -41,13 +41,13 @@ func (c *lruCache) Set(key Key, value interface{}) bool {
 		lItem = cItem.listItem
 		c.queue.MoveToFront(lItem)
 	} else {
-		lItem = c.queue.PushFront(key)
-		if c.queue.Len() > c.capacity {
+		if c.queue.Len() == c.capacity {
 			delete(c.items, c.queue.Back().Value.(Key))
 			c.queue.Remove(c.queue.Back())
 		}
+		lItem = c.queue.PushFront(key)
 	}
-	c.items[key] = cacheItem{Value: value, listItem: lItem}
+	c.items[key] = &cacheItem{Value: value, listItem: lItem}
 
 	return ok
 }
@@ -57,15 +57,18 @@ func (c *lruCache) Get(key Key) (interface{}, bool) {
 	defer c.Unlock()
 
 	v, ok := c.items[key]
+	var value interface{}
 	if ok {
+		value = v.Value
 		c.queue.MoveToFront(c.items[key].listItem)
 	}
-	return v.Value, ok
+	return value, ok
 }
 
 func (c *lruCache) Clear() {
 	c.Lock()
 	defer c.Unlock()
 
-	c.items = make(map[Key]cacheItem, c.capacity)
+	c.items = make(map[Key]*cacheItem, c.capacity)
+	c.queue = NewList()
 }

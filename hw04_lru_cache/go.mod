@@ -1,4 +1,4 @@
-module github.com/AnnaBlok/hw04_lru_cache
+module github.com/AnnaBlok/GOtus/hw04_lru_cache
 
 go 1.19
 
