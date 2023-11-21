@@ -45,15 +45,15 @@ func (l *list) Back() *ListItem {
 func (l *list) PushFront(v interface{}) *ListItem {
 	if l.front != nil {
 		l.front = NewListItem(v, l.front, nil)
+		if l.front.Next != nil {
+			l.front.Next.Prev = l.front
+		}
 	} else {
 		l.front = NewListItem(v, l.back, nil)
 	}
-	if l.front.Next != nil {
-		l.front.Next.Prev = l.front
-	}
 	l.len++
-	if l.len == 2 && l.back == nil {
-		l.back = l.front.Next
+	if l.len == 1 {
+		l.back = l.front
 	}
 
 	return l.front
@@ -62,15 +62,15 @@ func (l *list) PushFront(v interface{}) *ListItem {
 func (l *list) PushBack(v interface{}) *ListItem {
 	if l.back != nil {
 		l.back = NewListItem(v, nil, l.back)
+		if l.back.Prev != nil {
+			l.back.Prev.Next = l.back
+		}
 	} else {
 		l.back = NewListItem(v, nil, l.front)
 	}
-	if l.back.Prev != nil {
-		l.back.Prev.Next = l.back
-	}
 	l.len++
-	if l.len == 2 && l.front == nil {
-		l.front = l.back.Prev
+	if l.len == 1 {
+		l.front = l.back
 	}
 
 	return l.back
@@ -85,7 +85,8 @@ func (l *list) Remove(i *ListItem) {
 	}
 	if i == l.front {
 		l.front = l.front.Next
-	} else if i == l.back {
+	}
+	if i == l.back {
 		l.back = l.back.Prev
 	}
 	l.len--

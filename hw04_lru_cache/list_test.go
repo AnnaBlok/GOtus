@@ -57,6 +57,7 @@ func TestList(t *testing.T) {
 
 		require.Equal(t, 30, l.Front().Value)
 		require.Equal(t, 10, l.Back().Value)
+		require.Equal(t, 3, l.Len())
 
 		l = NewList()
 		l.PushBack(10)
@@ -65,6 +66,7 @@ func TestList(t *testing.T) {
 
 		require.Equal(t, 10, l.Front().Value)
 		require.Equal(t, 30, l.Back().Value)
+		require.Equal(t, 3, l.Len())
 	})
 
 	t.Run("remove the last item", func(t *testing.T) {
