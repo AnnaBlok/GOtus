@@ -15,7 +15,7 @@ func ExecutePipeline(in In, done In, stages ...Stage) Out {
 		case <-done:
 			break
 		default:
-			out = make(chan interface{})
+			out = make(Bi)
 			go executeStage(stage, in, out, done)
 			in = out
 		}
@@ -25,16 +25,16 @@ func ExecutePipeline(in In, done In, stages ...Stage) Out {
 
 func executeStage(stage Stage, in In, out Bi, done In) {
 	defer close(out)
-	select {
-	case <-done:
-		return
-	default:
-		for v := range stage(in) {
-			select {
-			case <-done:
+	stageOut := stage(in)
+	for {
+		select {
+		case <-done:
+			return
+		case v, ok := <-stageOut:
+			if !ok {
 				return
-			case out <- v:
 			}
+			out <- v
 		}
 	}
 }
