@@ -44,7 +44,7 @@ func Copy(fromPath, toPath string, offset, limit int64) error {
 	}
 	defer dst.Close()
 
-	dstLen := srcInfo.Size()
+	dstLen := srcInfo.Size() - offset
 	if dstLen > limit {
 		dstLen = limit
 	}
